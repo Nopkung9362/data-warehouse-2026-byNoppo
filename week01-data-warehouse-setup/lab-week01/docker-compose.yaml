@@ -59,7 +59,9 @@ x-airflow-common:
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dw_user:dw_pass@postgres/airflow
+    AIRFLOW__CORE__TEST_CONNECTION: 'Enabled'
     AIRFLOW__API_AUTH__JWT_SECRET: 'test-key'
+    AIRFLOW__CORE__TEST_CONNECTION: 'Enabled'
     # AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     # AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -107,6 +109,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ${AIRFLOW_PROJ_DIR:-.}/raw_data:/home/raw_data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
