@@ -1,0 +1,121 @@
+[Title] รายงานการวิเคราะห์และออกแบบคลังข้อมูล
+[Subtitle] Data Warehouse Analysis and Design
+[Normal] โครงการคลังข้อมูลการขายและสินค้าคงคลัง
+บริษัท ไทยรีเทล กรุ๊ป จำกัด (มหาชน)
+[Caption] ตารางที่ 1 ข้อมูลควบคุมเอกสาร
+[Normal] เอกสารกำหนดผลการวิเคราะห์ความต้องการทางธุรกิจ สถาปัตยกรรมข้อมูล โครงสร้างคลังข้อมูล การผูกโยงข้อมูลจากระบบต้นทาง การควบคุมคุณภาพข้อมูล และเกณฑ์รับมอบของโครงการ ขอบเขตระยะที่ 1 ครอบคลุมการขายหน้าร้านและสินค้าคงคลังรายวัน โดยใช้มิติข้อมูลร่วมสำหรับการรายงานระดับองค์กร
+[Heading 1] 1 ความต้องการทางธุรกิจและขอบเขตโครงการ
+[Heading 2] 1.1 วัตถุประสงค์และผู้ใช้ข้อมูล
+[Normal] โครงการจัดทำข้อมูลการขายและสินค้าคงคลังที่มีนิยามร่วมกัน เพื่อให้ผู้บริหารติดตามผลดำเนินงาน ฝ่ายการเงินกระทบยอดรายได้และต้นทุน ฝ่ายการตลาดติดตามลูกค้าและโปรโมชัน และฝ่ายปฏิบัติการบริหารยอดคงเหลือของแต่ละสาขา
+[Caption] ตารางที่ 2 ผู้ใช้ข้อมูลและความรับผิดชอบ
+[Heading 2] 1.2 ความต้องการทางธุรกิจ
+[Caption] ตารางที่ 3 ความต้องการและตัวชี้วัด
+[Heading 2] 1.3 นิยามตัวชี้วัด
+[Normal] ตัวเงินของการขายและต้นทุนใช้เงินบาท ไม่รวมภาษีมูลค่าเพิ่ม การคำนวณยอดสุทธิใช้มูลค่าหลังส่วนลดที่ POS บันทึกจริง ตัวหารที่เป็นศูนย์ให้ผลลัพธ์ NULL และแสดงสถานะไม่สามารถคำนวณได้
+[Caption] ตารางที่ 4 ทะเบียนตัวชี้วัด
+[Heading 2] 1.4 ขอบเขตและผลส่งมอบ
+[Caption] ตารางที่ 5 ขอบเขตโครงการ
+[Heading 1] 2 สถาปัตยกรรมและระบบต้นทาง
+[Normal] คลังข้อมูลส่วนกลางใช้ PostgreSQL แยก Schema เป็น raw stg dw mart และ ops การแปลงข้อมูลใช้ dbt SQL งานประมวลผลควบคุมด้วย Airflow และเผยแพร่รายงานผ่าน Power BI โดยบัญชีบริการและผู้ใช้ธุรกิจได้รับสิทธิ์แยกตามขอบเขตข้อมูล
+[Heading 2] 2.1 โครงสร้างการไหลของข้อมูล
+[Caption] ตารางที่ 6 สถาปัตยกรรมข้อมูล
+[Heading 2] 2.2 องค์ประกอบระบบ
+[Caption] ตารางที่ 7 ข้อกำหนดองค์ประกอบระบบ
+[Heading 2] 2.3 รายการระบบต้นทางและสัญญาข้อมูล
+[Caption] ตารางที่ 8 ระบบต้นทาง
+[Heading 1] 3 แบบจำลองข้อมูลและโครงสร้างคลังข้อมูล
+[Heading 2] 3.1 Enterprise Data Warehouse Bus Matrix
+[Caption] ตารางที่ 9 Business Process และมิติร่วม
+[Heading 2] 3.2 ข้อกำหนดมิติร่วม
+[Caption] ตารางที่ 10 ข้อกำหนด Conformed Dimensions
+[Heading 2] 3.3 ทะเบียนตารางและ ERD
+[Caption] ตารางที่ 11 รายการตารางในคลังข้อมูล
+[Caption] ภาพที่ 1 ERD การขาย
+[Caption] ภาพที่ 2 ERD สินค้าคงคลัง
+[Heading 2] 3.4 โครงสร้างตารางข้อเท็จจริง
+[Heading 3] 3.4.1 Fact_Sales_Transaction
+[Normal] หนึ่งแถวต่อรายการสินค้าในบิลของ POS; Unique (source_system, source_line_id) รายการยกเลิกถูกตัดออกจาก Scope การขาย และรายการคืนสินค้าจัดเก็บแยกตามกระบวนการคืนสินค้า
+[Caption] ตารางที่ 12 โครงสร้าง Fact_Sales_Transaction
+[Heading 3] 3.4.2 Fact_Inventory_Snapshot
+[Normal] หนึ่งแถวต่อวัน SKU และสาขา ณ เวลา Cutoff; Unique (date_key, product_key, store_key) Snapshot ครอบคลุมสินค้า Active Assortment รวมรายการที่คงเหลือศูนย์
+[Caption] ตารางที่ 13 โครงสร้าง Fact_Inventory_Snapshot
+[Heading 2] 3.5 โครงสร้างตารางมิติ
+[Heading 3] 3.5.1 Dim_Customer
+[Caption] ตารางที่ 14 โครงสร้าง Dim_Customer
+[Heading 3] 3.5.2 Dim_Product
+[Caption] ตารางที่ 15 โครงสร้าง Dim_Product
+[Heading 3] 3.5.3 Dim_Store
+[Caption] ตารางที่ 16 โครงสร้าง Dim_Store
+[Heading 3] 3.5.4 Dim_Date
+[Caption] ตารางที่ 17 โครงสร้าง Dim_Date
+[Heading 3] 3.5.5 Dim_Promotion
+[Caption] ตารางที่ 18 โครงสร้าง Dim_Promotion
+[Heading 3] 3.5.6 Dim_Employee
+[Caption] ตารางที่ 19 โครงสร้าง Dim_Employee
+[Heading 3] 3.5.7 Dim_Supplier
+[Caption] ตารางที่ 20 โครงสร้าง Dim_Supplier
+[Heading 2] 3.6 ข้อกำหนดการจัดการประวัติ
+[Caption] ตารางที่ 21 นโยบายประวัติรายมิติ
+[Heading 2] 3.7 ตารางสรุปและข้อกำหนดดัชนี
+[Caption] ตารางที่ 22 โครงสร้าง mart.Sales_Daily_Store
+[Caption] ตารางที่ 23 ข้อกำหนดความสัมพันธ์และดัชนี
+[Heading 2] 3.8 ทะเบียนเทียบรหัสระหว่างระบบ
+[Caption] ตารางที่ 24 โครงสร้าง dw.Ref_Identity_Map
+[Normal] Unique (entity_type, source_system, source_code, effective_start_date) ช่วงการเทียบรหัสเดียวกันไม่ทับซ้อน และหนึ่งรหัสต้นทางมีรหัสกลางที่ใช้ได้เพียงหนึ่งรายการ ณ วันธุรกิจ เจ้าของข้อมูลหลักรับรอง Mapping ก่อนนำไป Lookup มิติ
+[Heading 1] 4 กระบวนการรับ แปลง และโหลดข้อมูล
+[Normal] กระบวนการ ELT รับข้อมูลต้นฉบับเข้าสู่ raw ตรวจและจัดข้อมูลใน stg แล้วโหลดมิติ ข้อเท็จจริง และ mart ตามลำดับ Airflow เผยแพร่รอบข้อมูลเมื่อการตรวจคุณภาพและการกระทบยอดของ Scope เดียวกันผ่านครบ
+[Heading 2] 4.1 Source to Target Mapping การขาย
+[Caption] ตารางที่ 25 Mapping ของ Fact_Sales_Transaction
+[Heading 2] 4.2 Source to Target Mapping สินค้าคงคลัง
+[Caption] ตารางที่ 26 Mapping ของ Fact_Inventory_Snapshot
+[Heading 2] 4.3 Source to Target Mapping มิติ
+[Caption] ตารางที่ 27 Mapping ของตารางมิติ
+[Heading 2] 4.4 เงื่อนไขคุณภาพข้อมูล
+[Caption] ตารางที่ 28 Data Quality Rules
+[Heading 2] 4.5 กลยุทธ์โหลดและการแก้ไขข้อมูล
+[Caption] ตารางที่ 29 Load Strategy
+[Heading 2] 4.6 ตารางควบคุมและการกู้คืน
+[Caption] ตารางที่ 30 โครงสร้าง ops.Load_Batch
+[Caption] ตารางที่ 31 โครงสร้าง ops.Reject_Record
+[Caption] ตารางที่ 32 ลำดับประมวลผลและการกู้คืน
+[Heading 1] 5 การกำกับดูแล ความปลอดภัย และการปฏิบัติงาน
+[Heading 2] 5.1 สิทธิ์การเข้าถึง
+[Caption] ตารางที่ 33 Role Based Access Control
+[Heading 2] 5.2 การปกป้องข้อมูลและวงจรชีวิต
+[Caption] ตารางที่ 34 นโยบายข้อมูล
+[Heading 2] 5.3 รอบประมวลผลและ SLA
+[Normal] รอบประมวลผลใช้เวลา Asia/Bangkok และครอบคลุมวันธุรกิจก่อนหน้า Daily Batch เผยแพร่ข้อมูลภายใน 06:00 น. เมื่อผ่านคุณภาพข้อมูลและการกระทบยอดครบทุกขั้นตอน
+[Caption] ตารางที่ 35 Refresh Schedule และ SLA
+[Heading 2] 5.4 Data Lineage และการดูแลระบบ
+[Caption] ตารางที่ 36 Data Lineage
+[Caption] ตารางที่ 37 ข้อกำหนดการปฏิบัติงาน
+[Heading 1] 6 การทดสอบและการรับมอบ
+[Caption] ตารางที่ 38 เกณฑ์ตรวจรับ
+[Caption] ตารางที่ 39 รายการรับมอบ
+[Heading 1] 7 รายละเอียดการนำระบบไปใช้งาน
+[Normal] กำหนดชุดติดตั้งสำหรับคลังข้อมูลการขายและสินค้าคงคลังระยะที่ 1 โดยใช้ PostgreSQL เป็นฐานข้อมูลกลาง Python เป็นตัวโหลดข้อมูล Airflow ควบคุมรอบงาน และ dbt สร้างมุมมองและทดสอบข้อมูลก่อนส่งต่อ Power BI ชุดซอร์สโค้ดในภาคผนวกเป็นส่วนของแบบส่งมอบเพื่อพัฒนาและตรวจรับตามข้อกำหนดโครงการ
+[Heading 2] 7.1 สภาพแวดล้อมและการกำหนดค่า
+[Caption] ตารางที่ 40 สภาพแวดล้อมสำหรับติดตั้ง
+[Heading 2] 7.2 รายการโปรแกรมและลำดับติดตั้ง
+[Caption] ตารางที่ 41 ทะเบียนส่วนประกอบของชุดส่งมอบ
+[Normal] Migration แรกใช้สำหรับฐานข้อมูลใหม่และต้องบันทึกว่าใช้แล้วใน Deployment Ledger การแก้ไขรุ่นถัดไปใช้ Migration เพิ่มเติมตามลำดับ ห้ามเรียก 001_schema.sql ซ้ำบนฐานข้อมูลที่มีข้อมูลใช้งานแล้ว ชื่อ Identifier ใน SQL ใช้อักษรเล็กแบบไม่ใส่เครื่องหมายคำพูด โดยตรงกับชื่อและคอลัมน์ในพจนานุกรมข้อมูล
+[Normal] โครงสร้างแพ็กเกจ dbt วาง dbt_project.yml ที่ Project Root, bi_sales_daily.sql ใน models และ reconciliation.sql กับ relationships.sql ใน tests ส่วน profiles.yml อยู่ใน DBT_PROFILES_DIR ที่จำกัดสิทธิ์ Airflow วาง daily_warehouse.py ใน DAG Directory และติดตั้ง warehouse_loader เป็นโมดูลบน Worker โดยใช้ Python 3.11
+[Heading 2] 7.3 โครงสร้างตารางสนับสนุนการทำงาน
+[Caption] ตารางที่ 42 โครงสร้าง raw.source_record
+[Caption] ตารางที่ 43 โครงสร้าง stg.accepted_record
+[Caption] ตารางที่ 44 โครงสร้าง ops.publish_state
+[Caption] ตารางที่ 45 โครงสร้าง ops.branch_access
+[Normal] raw และ stg จำกัดให้ Pipeline และผู้ดูแลที่มีสิทธิ์เข้าถึงข้อมูลต้นทางอ่านได้ รหัส record_id ต้องคงเดิมสำหรับเหตุการณ์เดียวกัน การแก้ข้อมูล SCD2 ต่างวันมีผลต้องมี record_id แยกตาม Natural Key และ effective_start_date
+[Heading 2] 7.4 สัญญาข้อมูลสำหรับเชื่อมต่อโปรแกรม
+[Caption] ตารางที่ 46 ข้อกำหนด Manifest และ Envelope
+[Caption] ตารางที่ 47 สัญญาข้อมูลแต่ละ Entity
+[Normal] ส่วนเชื่อมต่อ POS ERP CRM และ HR ส่ง Canonical Bundle ตามสัญญาข้างต้น โดยรับผิดชอบการ Join ต้นทาง การเลือกต้นทุนตามช่วงเวลา และ Geography Mapping ก่อนส่งเข้า Loader โปรแกรมไม่เก็บรหัสผ่านหรือ Connection String ของระบบต้นทางใน Source Code
+[Heading 2] 7.5 การโหลดข้อมูลและการควบคุมธุรกรรม
+[Caption] ตารางที่ 48 ลำดับประมวลผลที่นำไปพัฒนา
+[Normal] Initial Load แบ่งข้อมูลเป็น Bundle ตาม Scope ที่กระทบยอดได้ โดยโหลด Identity Mapping และมิติพร้อมประวัติให้ครอบคลุม Fact ก่อนเริ่มโหลดธุรกรรม Incremental Load รับรายการเปลี่ยนแปลงและ Tombstone จาก POS ส่วน Inventory ใช้ Complete Snapshot โปรแกรม Baseline สรุป Sales_Daily_Store ใหม่ทั้งตารางใน Transaction เดียว จึงครอบคลุมทั้ง Scope เดิมและใหม่เมื่อย้ายวันที่ สาขา หรือยกเลิกรายการ
+[Normal] การปรับย้อนหลังของข้อมูลหลักทำให้โปรแกรมอ่านประวัติ Staging และสร้างความสัมพันธ์ใหม่ เก็บ stg.accepted_record ของ Sales และ Inventory ให้ครอบคลุมระยะย้อนหลังของ Fact 5 ปี ส่วน Payload ของมิติที่มีข้อมูลส่วนบุคคลใช้ Retention ตามนโยบายข้อมูลต้นทาง 90 วัน การปรับนอกระยะที่มีประวัติต้องรับ Bundle ที่ต้นทางรับรองใหม่และกระทบยอดก่อนเผยแพร่
+[Heading 2] 7.6 สิทธิ์และการเชื่อมต่อรายงาน
+[Caption] ตารางที่ 49 การผูกสิทธิ์กับส่วนประกอบที่ติดตั้ง
+[Normal] Power BI ใช้รายได้สุทธิและกำไรจากมุมมองที่ตรวจ Cost Coverage แล้ว ยอดกำไรและอัตรากำไรเป็น NULL เมื่อ Costed Line Count ไม่เท่ากับ Line Count การนับลูกค้ารวมหลายวันหรือหลายสาขาต้องคำนวณ Distinct Natural Key จาก Fact ตาม Scope ไม่รวม Customer Count ของ Summary โดยตรง
+[Normal] มุมมอง mart.v_inventory_daily แสดง Snapshot รายวัน สาขา และ SKU พร้อมชื่อสินค้า สถานะ Assortment และ Stock Out โดยใช้ Row Policy ของ Fact Inventory ยอดคงคลังและมูลค่ารวมเฉพาะวันเดียวกัน อัตรา Stock Out ใช้จำนวนแถวที่ขาดสินค้าเทียบจำนวน Active Assortment ใน Scope เดียวกัน
+[Heading 2] 7.7 การนำขึ้นใช้งานและการย้อนกลับ

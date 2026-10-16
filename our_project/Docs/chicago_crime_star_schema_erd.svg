@@ -1,0 +1,356 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2180 1380" width="2180" height="1380">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&amp;display=swap');
+            text {
+                font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            }
+            .header-text {
+                font-size: 24px;
+                font-weight: 700;
+                fill: #ffffff;
+                text-anchor: middle;
+                letter-spacing: 0.5px;
+            }
+            .key-text {
+                font-size: 18px;
+                font-weight: 700;
+                fill: #0f172a;
+            }
+            .col-text {
+                font-size: 18px;
+                font-weight: 500;
+                fill: #1e293b;
+            }
+            .type-text {
+                font-size: 17px;
+                font-weight: 400;
+                fill: #64748b;
+                text-anchor: end;
+            }
+            .connector-line {
+                stroke: #475569;
+                stroke-width: 2.2;
+                stroke-dasharray: 6, 4;
+                fill: none;
+            }
+            .crow-prong {
+                stroke: #475569;
+                stroke-width: 2.2;
+                fill: none;
+            }
+            .mandatory-bar {
+                stroke: #475569;
+                stroke-width: 2.2;
+            }
+        </style>
+    </defs>
+    <rect width="2180" height="1380" fill="#ffffff"/>
+    <!-- Table: Dim_Date -->
+    <g id="Dim_Date">
+        <rect x="60" y="60" width="540" height="662" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 60 65 Q 60 60 65 60 L 595 60 Q 600 60 600 65 L 600 128 L 60 128 Z" fill="#102a43"/>
+        <text x="330.0" y="102.0" class="header-text">Dim_Date</text>
+        <rect x="60" y="128" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="182" x2="600" y2="182" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="78" y="161.0" class="key-text">PK</text>
+        <text x="126" y="161.0" class="col-text">date_key</text>
+        <text x="582" y="161.0" class="type-text">INTEGER</text>
+        <rect x="60" y="182" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="236" x2="600" y2="236" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="78" y="215.0" class="key-text">UK</text>
+        <text x="126" y="215.0" class="col-text">full_date</text>
+        <text x="582" y="215.0" class="type-text">DATE</text>
+        <rect x="60" y="236" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="290" x2="600" y2="290" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="269.0" class="col-text">day_of_week</text>
+        <text x="582" y="269.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="290" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="344" x2="600" y2="344" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="323.0" class="col-text">day_name</text>
+        <text x="582" y="323.0" class="type-text">VARCHAR(10)</text>
+        <rect x="60" y="344" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="398" x2="600" y2="398" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="377.0" class="col-text">day_of_month</text>
+        <text x="582" y="377.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="398" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="452" x2="600" y2="452" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="431.0" class="col-text">month_no</text>
+        <text x="582" y="431.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="452" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="506" x2="600" y2="506" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="485.0" class="col-text">month_name</text>
+        <text x="582" y="485.0" class="type-text">VARCHAR(15)</text>
+        <rect x="60" y="506" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="560" x2="600" y2="560" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="539.0" class="col-text">quarter</text>
+        <text x="582" y="539.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="560" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="614" x2="600" y2="614" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="593.0" class="col-text">year</text>
+        <text x="582" y="593.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="614" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="668" x2="600" y2="668" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="647.0" class="col-text">is_weekend</text>
+        <text x="582" y="647.0" class="type-text">BOOLEAN</text>
+        <path d="M 60 668 L 600 668 L 600 717 Q 600 722 595 722 L 65 722 Q 60 722 60 717 Z" fill="#ffffff"/>
+        <text x="126" y="701.0" class="col-text">is_holiday</text>
+        <text x="582" y="701.0" class="type-text">BOOLEAN</text>
+        <rect x="60" y="60" width="540" height="662" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Table: Dim_Time -->
+    <g id="Dim_Time">
+        <rect x="60" y="745" width="540" height="338" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 60 750 Q 60 745 65 745 L 595 745 Q 600 745 600 750 L 600 813 L 60 813 Z" fill="#102a43"/>
+        <text x="330.0" y="787.0" class="header-text">Dim_Time</text>
+        <rect x="60" y="813" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="867" x2="600" y2="867" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="78" y="846.0" class="key-text">PK</text>
+        <text x="126" y="846.0" class="col-text">time_key</text>
+        <text x="582" y="846.0" class="type-text">INTEGER</text>
+        <rect x="60" y="867" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="921" x2="600" y2="921" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="900.0" class="col-text">hour_24</text>
+        <text x="582" y="900.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="921" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="975" x2="600" y2="975" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="954.0" class="col-text">minute</text>
+        <text x="582" y="954.0" class="type-text">SMALLINT</text>
+        <rect x="60" y="975" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="60" y1="1029" x2="600" y2="1029" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="126" y="1008.0" class="col-text">period_name</text>
+        <text x="582" y="1008.0" class="type-text">VARCHAR(5)</text>
+        <path d="M 60 1029 L 600 1029 L 600 1078 Q 600 1083 595 1083 L 65 1083 Q 60 1083 60 1078 Z" fill="#ffffff"/>
+        <text x="126" y="1062.0" class="col-text">shift_name</text>
+        <text x="582" y="1062.0" class="type-text">VARCHAR(15)</text>
+        <rect x="60" y="745" width="540" height="338" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Table: Dim_Location_Type -->
+    <g id="Dim_Location_Type">
+        <rect x="60" y="1110" width="540" height="176" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 60 1115 Q 60 1110 65 1110 L 595 1110 Q 600 1110 600 1115 L 600 1178 L 60 1178 Z" fill="#102a43"/>
+        <text x="330.0" y="1152.0" class="header-text">Dim_Location_Type</text>
+        <rect x="60" y="1178" width="540" height="54" fill="#ffffff"/>
+        <line x1="60" y1="1232" x2="600" y2="1232" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="78" y="1211.0" class="key-text">PK</text>
+        <text x="126" y="1211.0" class="col-text">location_type_key</text>
+        <text x="582" y="1211.0" class="type-text">INTEGER</text>
+        <path d="M 60 1232 L 600 1232 L 600 1281 Q 600 1286 595 1286 L 65 1286 Q 60 1286 60 1281 Z" fill="#f0f4f8"/>
+        <text x="126" y="1265.0" class="col-text">location_desc</text>
+        <text x="582" y="1265.0" class="type-text">VARCHAR(100)</text>
+        <rect x="60" y="1110" width="540" height="176" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Table: Fact_Crime_Incident -->
+    <g id="Fact_Crime_Incident">
+        <rect x="760" y="160" width="660" height="1040" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 760 165 Q 760 160 765 160 L 1415 160 Q 1420 160 1420 165 L 1420 228 L 760 228 Z" fill="#102a43"/>
+        <text x="1090.0" y="202.0" class="header-text">Fact_Crime_Incident</text>
+        <rect x="760" y="228" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="282" x2="1420" y2="282" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="261.0" class="key-text">PK</text>
+        <text x="826" y="261.0" class="col-text">incident_key</text>
+        <text x="1402" y="261.0" class="type-text">BIGINT</text>
+        <rect x="760" y="282" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="336" x2="1420" y2="336" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="315.0" class="key-text">UK</text>
+        <text x="826" y="315.0" class="col-text">source_id</text>
+        <text x="1402" y="315.0" class="type-text">INTEGER</text>
+        <rect x="760" y="336" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="390" x2="1420" y2="390" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="369.0" class="col-text">case_number</text>
+        <text x="1402" y="369.0" class="type-text">VARCHAR(20)</text>
+        <rect x="760" y="390" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="444" x2="1420" y2="444" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="423.0" class="key-text">FK</text>
+        <text x="826" y="423.0" class="col-text">date_key</text>
+        <text x="1402" y="423.0" class="type-text">INTEGER</text>
+        <rect x="760" y="444" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="498" x2="1420" y2="498" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="477.0" class="key-text">FK</text>
+        <text x="826" y="477.0" class="col-text">time_key</text>
+        <text x="1402" y="477.0" class="type-text">INTEGER</text>
+        <rect x="760" y="498" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="552" x2="1420" y2="552" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="531.0" class="key-text">FK</text>
+        <text x="826" y="531.0" class="col-text">location_key</text>
+        <text x="1402" y="531.0" class="type-text">INTEGER</text>
+        <rect x="760" y="552" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="606" x2="1420" y2="606" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="585.0" class="key-text">FK</text>
+        <text x="826" y="585.0" class="col-text">crime_type_key</text>
+        <text x="1402" y="585.0" class="type-text">INTEGER</text>
+        <rect x="760" y="606" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="660" x2="1420" y2="660" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="778" y="639.0" class="key-text">FK</text>
+        <text x="826" y="639.0" class="col-text">location_type_key</text>
+        <text x="1402" y="639.0" class="type-text">INTEGER</text>
+        <rect x="760" y="660" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="714" x2="1420" y2="714" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="693.0" class="col-text">block</text>
+        <text x="1402" y="693.0" class="type-text">VARCHAR(100)</text>
+        <rect x="760" y="714" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="768" x2="1420" y2="768" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="747.0" class="col-text">latitude</text>
+        <text x="1402" y="747.0" class="type-text">NUMERIC(10,7)</text>
+        <rect x="760" y="768" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="822" x2="1420" y2="822" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="801.0" class="col-text">longitude</text>
+        <text x="1402" y="801.0" class="type-text">NUMERIC(10,7)</text>
+        <rect x="760" y="822" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="876" x2="1420" y2="876" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="855.0" class="col-text">x_coordinate</text>
+        <text x="1402" y="855.0" class="type-text">NUMERIC(12,3)</text>
+        <rect x="760" y="876" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="930" x2="1420" y2="930" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="909.0" class="col-text">y_coordinate</text>
+        <text x="1402" y="909.0" class="type-text">NUMERIC(12,3)</text>
+        <rect x="760" y="930" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="984" x2="1420" y2="984" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="963.0" class="col-text">incident_count</text>
+        <text x="1402" y="963.0" class="type-text">SMALLINT</text>
+        <rect x="760" y="984" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="1038" x2="1420" y2="1038" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="1017.0" class="col-text">arrest_flag</text>
+        <text x="1402" y="1017.0" class="type-text">SMALLINT</text>
+        <rect x="760" y="1038" width="660" height="54" fill="#f0f4f8"/>
+        <line x1="760" y1="1092" x2="1420" y2="1092" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="1071.0" class="col-text">domestic_flag</text>
+        <text x="1402" y="1071.0" class="type-text">SMALLINT</text>
+        <rect x="760" y="1092" width="660" height="54" fill="#ffffff"/>
+        <line x1="760" y1="1146" x2="1420" y2="1146" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="826" y="1125.0" class="col-text">source_updated_at</text>
+        <text x="1402" y="1125.0" class="type-text">TIMESTAMPTZ</text>
+        <path d="M 760 1146 L 1420 1146 L 1420 1195 Q 1420 1200 1415 1200 L 765 1200 Q 760 1200 760 1195 Z" fill="#f0f4f8"/>
+        <text x="826" y="1179.0" class="col-text">dw_load_timestamp</text>
+        <text x="1402" y="1179.0" class="type-text">TIMESTAMPTZ</text>
+        <rect x="760" y="160" width="660" height="1040" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Table: Dim_Location -->
+    <g id="Dim_Location">
+        <rect x="1580" y="75" width="540" height="716" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 1580 80 Q 1580 75 1585 75 L 2115 75 Q 2120 75 2120 80 L 2120 143 L 1580 143 Z" fill="#102a43"/>
+        <text x="1850.0" y="117.0" class="header-text">Dim_Location</text>
+        <rect x="1580" y="143" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="197" x2="2120" y2="197" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1598" y="176.0" class="key-text">PK</text>
+        <text x="1646" y="176.0" class="col-text">location_key</text>
+        <text x="2102" y="176.0" class="type-text">INTEGER</text>
+        <rect x="1580" y="197" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="251" x2="2120" y2="251" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="230.0" class="col-text">beat_code</text>
+        <text x="2102" y="230.0" class="type-text">VARCHAR(10)</text>
+        <rect x="1580" y="251" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="305" x2="2120" y2="305" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="284.0" class="col-text">beat_num</text>
+        <text x="2102" y="284.0" class="type-text">INTEGER</text>
+        <rect x="1580" y="305" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="359" x2="2120" y2="359" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="338.0" class="col-text">sector</text>
+        <text x="2102" y="338.0" class="type-text">VARCHAR(10)</text>
+        <rect x="1580" y="359" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="413" x2="2120" y2="413" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="392.0" class="col-text">district_id</text>
+        <text x="2102" y="392.0" class="type-text">VARCHAR(5)</text>
+        <rect x="1580" y="413" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="467" x2="2120" y2="467" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="446.0" class="col-text">district_name</text>
+        <text x="2102" y="446.0" class="type-text">VARCHAR(50)</text>
+        <rect x="1580" y="467" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="521" x2="2120" y2="521" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="500.0" class="col-text">community_area_id</text>
+        <text x="2102" y="500.0" class="type-text">VARCHAR(5)</text>
+        <rect x="1580" y="521" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="575" x2="2120" y2="575" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="554.0" class="col-text">community_name</text>
+        <text x="2102" y="554.0" class="type-text">VARCHAR(50)</text>
+        <rect x="1580" y="575" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="629" x2="2120" y2="629" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="608.0" class="col-text">ward_num</text>
+        <text x="2102" y="608.0" class="type-text">INTEGER</text>
+        <rect x="1580" y="629" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="683" x2="2120" y2="683" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="662.0" class="col-text">effective_start_date</text>
+        <text x="2102" y="662.0" class="type-text">DATE</text>
+        <rect x="1580" y="683" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="737" x2="2120" y2="737" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="716.0" class="col-text">effective_end_date</text>
+        <text x="2102" y="716.0" class="type-text">DATE</text>
+        <path d="M 1580 737 L 2120 737 L 2120 786 Q 2120 791 2115 791 L 1585 791 Q 1580 791 1580 786 Z" fill="#f0f4f8"/>
+        <text x="1646" y="770.0" class="col-text">is_current</text>
+        <text x="2102" y="770.0" class="type-text">BOOLEAN</text>
+        <rect x="1580" y="75" width="540" height="716" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Table: Dim_Crime_Type -->
+    <g id="Dim_Crime_Type">
+        <rect x="1580" y="820" width="540" height="392" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.8"/>
+        <path d="M 1580 825 Q 1580 820 1585 820 L 2115 820 Q 2120 820 2120 825 L 2120 888 L 1580 888 Z" fill="#102a43"/>
+        <text x="1850.0" y="862.0" class="header-text">Dim_Crime_Type</text>
+        <rect x="1580" y="888" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="942" x2="2120" y2="942" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1598" y="921.0" class="key-text">PK</text>
+        <text x="1646" y="921.0" class="col-text">crime_type_key</text>
+        <text x="2102" y="921.0" class="type-text">INTEGER</text>
+        <rect x="1580" y="942" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="996" x2="2120" y2="996" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="975.0" class="col-text">iucr_code</text>
+        <text x="2102" y="975.0" class="type-text">VARCHAR(10)</text>
+        <rect x="1580" y="996" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="1050" x2="2120" y2="1050" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="1029.0" class="col-text">primary_type</text>
+        <text x="2102" y="1029.0" class="type-text">VARCHAR(50)</text>
+        <rect x="1580" y="1050" width="540" height="54" fill="#f0f4f8"/>
+        <line x1="1580" y1="1104" x2="2120" y2="1104" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="1083.0" class="col-text">description</text>
+        <text x="2102" y="1083.0" class="type-text">VARCHAR(100)</text>
+        <rect x="1580" y="1104" width="540" height="54" fill="#ffffff"/>
+        <line x1="1580" y1="1158" x2="2120" y2="1158" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="1646" y="1137.0" class="col-text">fbi_code</text>
+        <text x="2102" y="1137.0" class="type-text">VARCHAR(10)</text>
+        <path d="M 1580 1158 L 2120 1158 L 2120 1207 Q 2120 1212 2115 1212 L 1585 1212 Q 1580 1212 1580 1207 Z" fill="#f0f4f8"/>
+        <text x="1646" y="1191.0" class="col-text">is_index_crime</text>
+        <text x="2102" y="1191.0" class="type-text">BOOLEAN</text>
+        <rect x="1580" y="820" width="540" height="392" rx="5" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+    </g>
+
+    <!-- Relationship Connectors (Crow's Foot Notation) -->
+    <line x1="609" y1="145.0" x2="609" y2="165.0" class="mandatory-bar"/>
+    <line x1="616" y1="145.0" x2="616" y2="165.0" class="mandatory-bar"/>
+    <path d="M 600 155.0 L 645 155.0 L 645 417.0 L 738 417.0" class="connector-line"/>
+    <circle cx="740" cy="417.0" r="4.8" fill="#ffffff" stroke="#475569" stroke-width="2.2"/>
+    <line x1="745" y1="417.0" x2="760" y2="407.0" class="crow-prong"/>
+    <line x1="745" y1="417.0" x2="760" y2="417.0" class="crow-prong"/>
+    <line x1="745" y1="417.0" x2="760" y2="427.0" class="crow-prong"/>
+    <line x1="609" y1="830.0" x2="609" y2="850.0" class="mandatory-bar"/>
+    <line x1="616" y1="830.0" x2="616" y2="850.0" class="mandatory-bar"/>
+    <path d="M 600 840.0 L 680 840.0 L 680 471.0 L 738 471.0" class="connector-line"/>
+    <circle cx="740" cy="471.0" r="4.8" fill="#ffffff" stroke="#475569" stroke-width="2.2"/>
+    <line x1="745" y1="471.0" x2="760" y2="461.0" class="crow-prong"/>
+    <line x1="745" y1="471.0" x2="760" y2="471.0" class="crow-prong"/>
+    <line x1="745" y1="471.0" x2="760" y2="481.0" class="crow-prong"/>
+    <line x1="609" y1="1195.0" x2="609" y2="1215.0" class="mandatory-bar"/>
+    <line x1="616" y1="1195.0" x2="616" y2="1215.0" class="mandatory-bar"/>
+    <path d="M 600 1205.0 L 715 1205.0 L 715 633.0 L 738 633.0" class="connector-line"/>
+    <circle cx="740" cy="633.0" r="4.8" fill="#ffffff" stroke="#475569" stroke-width="2.2"/>
+    <line x1="745" y1="633.0" x2="760" y2="623.0" class="crow-prong"/>
+    <line x1="745" y1="633.0" x2="760" y2="633.0" class="crow-prong"/>
+    <line x1="745" y1="633.0" x2="760" y2="643.0" class="crow-prong"/>
+    <line x1="1571" y1="160.0" x2="1571" y2="180.0" class="mandatory-bar"/>
+    <line x1="1564" y1="160.0" x2="1564" y2="180.0" class="mandatory-bar"/>
+    <path d="M 1580 170.0 L 1535 170.0 L 1535 525.0 L 1442 525.0" class="connector-line"/>
+    <circle cx="1440" cy="525.0" r="4.8" fill="#ffffff" stroke="#475569" stroke-width="2.2"/>
+    <line x1="1435" y1="525.0" x2="1420" y2="515.0" class="crow-prong"/>
+    <line x1="1435" y1="525.0" x2="1420" y2="525.0" class="crow-prong"/>
+    <line x1="1435" y1="525.0" x2="1420" y2="535.0" class="crow-prong"/>
+    <line x1="1571" y1="905.0" x2="1571" y2="925.0" class="mandatory-bar"/>
+    <line x1="1564" y1="905.0" x2="1564" y2="925.0" class="mandatory-bar"/>
+    <path d="M 1580 915.0 L 1495 915.0 L 1495 579.0 L 1442 579.0" class="connector-line"/>
+    <circle cx="1440" cy="579.0" r="4.8" fill="#ffffff" stroke="#475569" stroke-width="2.2"/>
+    <line x1="1435" y1="579.0" x2="1420" y2="569.0" class="crow-prong"/>
+    <line x1="1435" y1="579.0" x2="1420" y2="579.0" class="crow-prong"/>
+    <line x1="1435" y1="579.0" x2="1420" y2="589.0" class="crow-prong"/>
+</svg>

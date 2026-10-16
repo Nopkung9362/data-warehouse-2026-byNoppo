@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Calendar date dimension (2001-2030) as defined in Table 13 of V3 PDF."
+    columns:
+      - name: date_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_time
+    description: "Time dimension for all 1,440 minutes and CPD shifts as defined in Table 14 of V3 PDF."
+    columns:
+      - name: time_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_location
+    description: "Location dimension with SCD Type 2 tracking Chicago boundaries as defined in Table 15 of V3 PDF."
+    columns:
+      - name: location_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_crime_type
+    description: "Crime classification dimension mapping IUCR to primary types as defined in Table 16 of V3 PDF."
+    columns:
+      - name: crime_type_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_location_type
+    description: "Location type dimension as defined in Table 17 of V3 PDF."
+    columns:
+      - name: location_type_key
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_crime_incident
+    description: "Atomic incident fact table as defined in Table 12 and Appendix B.2 of V3 PDF."
+    columns:
+      - name: incident_key
+        tests:
+          - not_null
+      - name: source_id
+        tests:
+          - not_null
+      - name: date_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: time_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_time')
+              field: time_key
+      - name: location_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_location')
+              field: location_key
+      - name: crime_type_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_crime_type')
+              field: crime_type_key
+      - name: location_type_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_location_type')
+              field: location_type_key

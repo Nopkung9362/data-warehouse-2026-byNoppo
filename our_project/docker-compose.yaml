@@ -1,0 +1,202 @@
+# ==============================================================================
+# Chicago Spatial-Temporal Crime Data Warehouse Stack
+# Modern Data Stack: PostgreSQL 16 + dbt Core + Apache Airflow 3.x + Cosmos + Metabase
+# ==============================================================================
+name: chicago_crime_dw
+
+x-airflow-common:
+  &airflow-common
+  build:
+    context: .
+    dockerfile: dockerfile.airflow
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-crime_dw}
+    AIRFLOW__CORE__TEST_CONNECTION: 'Enabled'
+    AIRFLOW__API_AUTH__JWT_SECRET: 'chicago-crime-dw-jwt-token-secret-key-2026'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    PYTHONPATH: '/opt/airflow:/opt/airflow/scripts:/opt/airflow/ingestion'
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/config:/opt/airflow/config
+    - ./airflow/plugins:/opt/airflow/plugins
+    - ./dbt:/opt/airflow/dbt
+    - ./scripts:/opt/airflow/scripts
+    - ./scripts:/opt/airflow/ingestion
+    - ./data:/opt/airflow/data
+    - ./data:/home/raw_data
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    &airflow-common-depends-on
+    postgres:
+      condition: service_healthy
+  networks:
+    - crime_dw_net
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Primary Relational Storage (Data Warehouse)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16
+    container_name: crime_dw_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-crime_dw}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./scripts/001_init_schemas.sql:/docker-entrypoint-initdb.d/001_init_schemas.sql:ro
+      - ./data:/home/data
+    networks:
+      - crime_dw_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-crime_dw}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 2. Database GUI Administration
+  # ----------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: crime_dw_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@crime-dw.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin_secret_pass}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - crime_dw_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------------------
+  # 3. Business Intelligence & Dashboard Layer
+  # ----------------------------------------------------------------------------
+  metabase:
+    image: metabase/metabase:latest
+    container_name: crime_dw_metabase
+    restart: always
+    environment:
+      MB_DB_FILE: /metabase-data/metabase.db
+    ports:
+      - "${METABASE_PORT:-3000}:3000"
+    volumes:
+      - metabase_data:/metabase-data
+    networks:
+      - crime_dw_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------------------
+  # 4. dbt CLI Execution Container (Ad-hoc transformations & docs)
+  # ----------------------------------------------------------------------------
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.8.2
+    container_name: crime_dw_dbt
+    restart: always
+    working_dir: /usr/app
+    entrypoint: [ "/bin/bash", "-c", "tail -f /dev/null" ]
+    ports:
+      - "8088:8080"
+    volumes:
+      - ./dbt:/usr/app
+      - ./dbt:/root/.dbt
+      - ./data:/home/data
+    networks:
+      - crime_dw_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------------------
+  # 5. Apache Airflow 3.x Orchestration Services
+  # ----------------------------------------------------------------------------
+  airflow-init:
+    <<: *airflow-common
+    container_name: crime_dw_airflow_init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        mkdir -p /opt/airflow/{logs,dags,plugins,config}
+        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/{logs,dags,plugins,config}
+        /entrypoint airflow db migrate
+        /entrypoint airflow users create \
+          --username admin \
+          --firstname Crime \
+          --lastname Admin \
+          --role Admin \
+          --email admin@crime-dw.local \
+          --password admin || true
+    user: "0:0"
+
+  airflow-apiserver:
+    <<: *airflow-common
+    container_name: crime_dw_airflow_apiserver
+    command: api-server
+    ports:
+      - "${AIRFLOW_WEBSERVER_PORT:-8080}:8080"
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: crime_dw_airflow_scheduler
+    command: scheduler
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    container_name: crime_dw_airflow_dag_processor
+    command: dag-processor
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-triggerer:
+    <<: *airflow-common
+    container_name: crime_dw_airflow_triggerer
+    command: triggerer
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+networks:
+  crime_dw_net:
+    driver: bridge
+
+volumes:
+  pg_data:
+  pgadmin_data:
+  metabase_data:

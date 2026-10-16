@@ -1,0 +1,63 @@
+# ==============================================================================
+# Chicago Spatial-Temporal Crime Data Warehouse (.gitignore)
+# ==============================================================================
+
+# 1. Environment & Credentials (CRITICAL: Do NOT commit secrets!)
+.env
+*.env
+!.env.example
+
+# 2. Big Data & Raw Ingestion Files (GitHub limit 100MB; Raw CSV is 2.4 GB)
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/crimes_sample_1000.csv
+*.csv.gz
+*.csv.zip
+
+# 3. dbt Compilation, Artifacts & Packages
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/.user.yml
+
+# 4. Apache Airflow Logs & Temporary State
+airflow/logs/
+airflow/plugins/__pycache__/
+airflow/dags/__pycache__/
+airflow/*.pid
+airflow/*.cfg
+airflow/airflow.db
+
+# 5. Database Volumes & SQLite / H2 Metadata
+*.db
+*.db.mv.db
+*.db.trace.db
+pg_data/
+metabase-data/
+pgadmin_data/
+
+# 6. Python Bytecode & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# 7. Microsoft Office Temporary & Lock Files
+~$*.docx
+~$*.xlsx
+~$*.pptx
+~*.tmp
+*.tmp
+
+# 8. Operating System & IDE Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace

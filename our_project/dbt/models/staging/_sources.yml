@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_staging
+    schema: raw_staging
+    tables:
+      - name: raw_crimes
+        description: "Raw ingested Chicago crime incidents from CLEAR system via SODA API or bulk CSV."

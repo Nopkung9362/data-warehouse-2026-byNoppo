@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: mart_daily_beat_crime_summary
+    description: "Daily Beat Crime Summary Mart as defined in Table 19 and Appendix C.1 of V3 PDF."
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+      - name: beat_code
+        tests:
+          - not_null
+      - name: primary_type
+        tests:
+          - not_null
+
+  - name: mart_spatial_heatmap
+    description: "Spatial Heatmap Density Mart as defined in Table 20 and Appendix C.2 of V3 PDF."
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+      - name: centroid_latitude
+        tests:
+          - not_null
+      - name: centroid_longitude
+        tests:
+          - not_null

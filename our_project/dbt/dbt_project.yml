@@ -1,0 +1,57 @@
+name: 'chicago_crime_dw'
+version: '1.2.0'
+config-version: 2
+
+profile: 'crime_dw'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  chicago_crime_dw:
+    staging:
+      +schema: raw_staging
+      +materialized: view
+    core:
+      +schema: core_dw
+      +materialized: table
+    marts:
+      +schema: data_marts
+      +materialized: table
+
+seeds:
+  chicago_crime_dw:
+    +schema: raw_staging
+    chicago_wards:
+      +column_types:
+        the_geom: text
+        WARD: varchar(10)
+    community_areas:
+      +column_types:
+        the_geom: text
+        AREA_NUMBE: varchar(10)
+        COMMUNITY: varchar(100)
+    police_beats:
+      +column_types:
+        the_geom: text
+        BEAT: varchar(10)
+        DISTRICT: varchar(10)
+        SECTOR: varchar(10)
+    police_districts:
+      +column_types:
+        the_geom: text
+        DIST_LABEL: varchar(100)
+        DIST_NUM: varchar(10)
+    iucr_codes:
+      +column_types:
+        IUCR: varchar(10)
+        "INDEX CODE": varchar(10)
+        ACTIVE: varchar(10)
