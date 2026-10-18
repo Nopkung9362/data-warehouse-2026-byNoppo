@@ -140,6 +140,8 @@ services:
       - |
         mkdir -p /opt/airflow/{logs,dags,plugins,config}
         chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/{logs,dags,plugins,config}
+        chmod -R 777 /opt/airflow/dbt 2>/dev/null || true
+        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/dbt 2>/dev/null || true
         /entrypoint airflow db migrate
         /entrypoint airflow users create \
           --username admin \
