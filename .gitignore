@@ -6,7 +6,7 @@
 **/pgadmin-data/
 **/week04-star-schema/Lab4
 **/Lab4.zip
-**/CLAUDE.md
+**/GEMINI.md
 __pycache__/
 /**/week01-data-warehouse-setup/lab-week01/DWH_Lab
 /**/week02-olap-metabase/lab-week02
@@ -23,3 +23,7 @@ __pycache__/
 /**/week09-etl-incremental-scd-with-dbt/script
 /**/week10-airflow-orchestration-with-dbt/lab-week10
 /**/week10-airflow-orchestration-with-dbt/script
+**/.agents/
+our_project/Docs/scripts/generate_erd.py
+our_project/Docs/Data_Warehouse_Architecture_Design_Document_Chicago.md
+our_project/Docs/build_docx.py

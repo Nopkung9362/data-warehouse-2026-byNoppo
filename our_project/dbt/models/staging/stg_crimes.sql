@@ -17,7 +17,7 @@ SELECT
     CASE WHEN UPPER(TRIM(arrest::TEXT)) IN ('TRUE', '1', 'T') THEN TRUE ELSE FALSE END AS arrest,
     CASE WHEN UPPER(TRIM(domestic::TEXT)) IN ('TRUE', '1', 'T') THEN TRUE ELSE FALSE END AS domestic,
     LPAD(TRIM(beat::TEXT), 4, '0') AS beat,
-    LPAD(TRIM(district::TEXT), 2, '0') AS district,
+    LPAD(NULLIF(TRIM(district::TEXT), '')::INTEGER::TEXT, 2, '0') AS district,
     NULLIF(TRIM(ward::TEXT), '')::INTEGER AS ward,
     TRIM(community_area::TEXT) AS community_area,
     TRIM(fbi_code) AS fbi_code,
