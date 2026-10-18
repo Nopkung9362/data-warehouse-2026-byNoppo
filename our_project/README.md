@@ -143,7 +143,7 @@ docker compose ps
 | **Apache Airflow** | `crime_dw_airflow_apiserver` | [http://localhost:8080](http://localhost:8080) | `admin` | `admin` | ควบคุม Pipeline อัตโนมัติรายวัน |
 | **pgAdmin 4** | `crime_dw_pgadmin` | [http://localhost:5050](http://localhost:5050) | `admin@crimedw.com` | `admin_secret_pass` | GUI บริหารจัดการฐานข้อมูล PostgreSQL |
 | **PostgreSQL 16** | `crime_dw_postgres` | `localhost:5432` | `postgres` | `postgres` | ฐานข้อมูลหลัก (Database: `crime_dw`) |
-| **dbt Container** | `crime_dw_dbt` | `localhost:8088` | - | - | ภาชนะสำหรับรันคำสั่ง dbt CLI ในระบบ |
+| **dbt Docs & Lineage** | `crime_dw_dbt` | [http://localhost:8088](http://localhost:8088) | - | - | แดชบอร์ดเอกสาร dbt และผัง **Interactive Data Lineage Graph** |
 
 ---
 
