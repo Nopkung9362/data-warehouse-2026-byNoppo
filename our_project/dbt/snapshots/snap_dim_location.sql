@@ -10,7 +10,7 @@
     )
 }}
 
-SELECT
+SELECT DISTINCT
     COALESCE(LPAD(TRIM(beat::TEXT), 4, '0'), '-1') AS beat_code,
     NULLIF(TRIM(beat::TEXT), '')::INTEGER AS beat_num,
     CASE
