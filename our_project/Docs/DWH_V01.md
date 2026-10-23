@@ -366,12 +366,12 @@ CREATE TABLE IF NOT EXISTS core_dw.fact_crime_incident (
     arrest_flag SMALLINT NOT NULL DEFAULT 0,
     domestic_flag SMALLINT NOT NULL DEFAULT 0,
     source_updated_at TIMESTAMPTZ NOT NULL,
-    dw_load_timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    dw_load_timestamp TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_fact_crime_incident PRIMARY KEY (incident_key, date_key),
     CONSTRAINT uk_fact_crime_source_id UNIQUE (source_id, date_key)
 ) PARTITION BY RANGE (date_key);
 
--- Partitions for Years 2021-2026 and Default
+-- Yearly Partition Ranges
 CREATE TABLE IF NOT EXISTS core_dw.fact_crime_incident_y2021
     PARTITION OF core_dw.fact_crime_incident
     FOR VALUES FROM (20210101) TO (20220101);
@@ -437,7 +437,7 @@ SELECT
     CASE WHEN UPPER(TRIM(arrest::TEXT)) IN ('TRUE', '1', 'T') THEN TRUE ELSE FALSE END AS arrest,
     CASE WHEN UPPER(TRIM(domestic::TEXT)) IN ('TRUE', '1', 'T') THEN TRUE ELSE FALSE END AS domestic,
     LPAD(TRIM(beat::TEXT), 4, '0') AS beat,
-    LPAD(TRIM(district::TEXT), 2, '0') AS district,
+    LPAD(NULLIF(TRIM(district::TEXT), '')::INTEGER::TEXT, 2, '0') AS district,
     NULLIF(TRIM(ward::TEXT), '')::INTEGER AS ward,
     TRIM(community_area::TEXT) AS community_area,
     TRIM(fbi_code) AS fbi_code,
@@ -500,7 +500,7 @@ sources:
     schema: raw_staging
     tables:
       - name: raw_crimes
-        description: "Raw ingested Chicago crime incidents from bulk CSV / Chicago Data Portal SODA API."
+        description: "Raw ingested Chicago crime incidents from CLEAR system via SODA API or bulk CSV."
 ```
 
 ---
@@ -665,32 +665,82 @@ FROM distinct_locations
   )
 }}
 
-WITH distinct_boundaries AS (
+WITH seed_districts AS (
+    SELECT DISTINCT
+        LPAD(TRIM("DIST_NUM"::TEXT), 2, '0') AS district_id,
+        UPPER(TRIM("DIST_LABEL"::TEXT)) AS district_label
+    FROM {{ ref('police_districts') }}
+    WHERE "DIST_NUM" IS NOT NULL
+),
+
+seed_communities AS (
+    SELECT DISTINCT
+        TRIM("AREA_NUMBE"::TEXT) AS community_area_id,
+        UPPER(TRIM("COMMUNITY"::TEXT)) AS community_name
+    FROM {{ ref('community_areas') }}
+    WHERE "AREA_NUMBE" IS NOT NULL
+),
+
+seed_beats AS (
+    SELECT DISTINCT
+        LPAD(TRIM("BEAT_NUM"::TEXT), 4, '0') AS beat_code,
+        TRIM("SECTOR"::TEXT) AS seed_sector
+    FROM {{ ref('police_beats') }}
+    WHERE "BEAT_NUM" IS NOT NULL
+),
+
+seed_wards AS (
+    SELECT DISTINCT
+        NULLIF(TRIM("WARD"::TEXT), '')::INTEGER AS ward_num
+    FROM {{ ref('chicago_wards') }}
+    WHERE "WARD" IS NOT NULL
+),
+
+distinct_boundaries AS (
     SELECT DISTINCT
         COALESCE(LPAD(TRIM(beat::TEXT), 4, '0'), '-1') AS beat_code,
         NULLIF(TRIM(beat::TEXT), '')::INTEGER AS beat_num,
         CASE
             WHEN LENGTH(TRIM(beat::TEXT)) >= 2 THEN SUBSTRING(TRIM(beat::TEXT), 1, 2)
             ELSE 'UNK'
-        END AS sector,
+        END AS fallback_sector,
         COALESCE(LPAD(TRIM(district::TEXT), 2, '0'), '-1') AS district_id,
-        CASE
-            WHEN district IS NOT NULL AND TRIM(district::TEXT) != ''
-            THEN 'District ' || LPAD(TRIM(district::TEXT), 2, '0')
-            ELSE 'Unknown District'
-        END AS district_name,
         COALESCE(TRIM(community_area::TEXT), '-1') AS community_area_id,
-        CASE
-            WHEN community_area IS NOT NULL AND TRIM(community_area::TEXT) != ''
-            THEN 'Community Area ' || TRIM(community_area::TEXT)
-            ELSE 'Unknown Community'
-        END AS community_name,
         COALESCE(ward, -1) AS ward_num,
         '2001-01-01'::DATE AS effective_start_date,
         '9999-12-31'::DATE AS effective_end_date,
         TRUE AS is_current
     FROM {{ ref('stg_crimes') }}
     WHERE beat IS NOT NULL OR district IS NOT NULL OR ward IS NOT NULL
+),
+
+enriched AS (
+    SELECT
+        b.beat_code,
+        b.beat_num,
+        COALESCE(pb.seed_sector, b.fallback_sector) AS sector,
+        b.district_id,
+        CASE
+            WHEN b.district_id != '-1' THEN 'District ' || b.district_id
+            ELSE 'Unknown District'
+        END AS district_name,
+        b.community_area_id,
+        COALESCE(
+            ca.community_name,
+            CASE 
+                WHEN b.community_area_id != '-1' THEN 'Community Area ' || b.community_area_id 
+                ELSE 'Unknown Community' 
+            END
+        ) AS community_name,
+        b.ward_num,
+        b.effective_start_date,
+        b.effective_end_date,
+        b.is_current
+    FROM distinct_boundaries b
+    LEFT JOIN seed_districts pd ON b.district_id = pd.district_id
+    LEFT JOIN seed_communities ca ON b.community_area_id = ca.community_area_id
+    LEFT JOIN seed_beats pb ON b.beat_code = pb.beat_code
+    LEFT JOIN seed_wards cw ON b.ward_num = cw.ward_num
 )
 
 SELECT
@@ -722,7 +772,7 @@ SELECT
     effective_start_date,
     effective_end_date,
     is_current
-FROM distinct_boundaries
+FROM enriched
 ```
 
 ---
@@ -1375,13 +1425,13 @@ services:
       postgres:
         condition: service_healthy
 
-  # 4. dbt CLI Execution Container
+  # 4. dbt CLI Execution Container (Ad-hoc transformations & docs)
   dbt:
     image: ghcr.io/dbt-labs/dbt-postgres:1.8.2
     container_name: crime_dw_dbt
     restart: always
     working_dir: /usr/app
-    entrypoint: [ "/bin/bash", "-c", "tail -f /dev/null" ]
+    entrypoint: [ "/bin/bash", "-c", "dbt docs serve --host 0.0.0.0 --port 8080 --no-browser || tail -f /dev/null" ]
     ports:
       - "8088:8080"
     volumes:
@@ -1649,28 +1699,75 @@ packages:
     )
 }}
 
+WITH seed_districts AS (
+    SELECT DISTINCT
+        LPAD(TRIM("DIST_NUM"::TEXT), 2, '0') AS district_id,
+        UPPER(TRIM("DIST_LABEL"::TEXT)) AS district_label
+    FROM {{ ref('police_districts') }}
+    WHERE "DIST_NUM" IS NOT NULL
+),
+
+seed_communities AS (
+    SELECT DISTINCT
+        TRIM("AREA_NUMBE"::TEXT) AS community_area_id,
+        UPPER(TRIM("COMMUNITY"::TEXT)) AS community_name
+    FROM {{ ref('community_areas') }}
+    WHERE "AREA_NUMBE" IS NOT NULL
+),
+
+seed_beats AS (
+    SELECT DISTINCT
+        LPAD(TRIM("BEAT_NUM"::TEXT), 4, '0') AS beat_code,
+        TRIM("SECTOR"::TEXT) AS seed_sector
+    FROM {{ ref('police_beats') }}
+    WHERE "BEAT_NUM" IS NOT NULL
+),
+
+seed_wards AS (
+    SELECT DISTINCT
+        NULLIF(TRIM("WARD"::TEXT), '')::INTEGER AS ward_num
+    FROM {{ ref('chicago_wards') }}
+    WHERE "WARD" IS NOT NULL
+),
+
+distinct_boundaries AS (
+    SELECT DISTINCT
+        COALESCE(LPAD(TRIM(beat::TEXT), 4, '0'), '-1') AS beat_code,
+        NULLIF(TRIM(beat::TEXT), '')::INTEGER AS beat_num,
+        CASE
+            WHEN LENGTH(TRIM(beat::TEXT)) >= 2 THEN SUBSTRING(TRIM(beat::TEXT), 1, 2)
+            ELSE 'UNK'
+        END AS fallback_sector,
+        COALESCE(LPAD(TRIM(district::TEXT), 2, '0'), '-1') AS district_id,
+        COALESCE(TRIM(community_area::TEXT), '-1') AS community_area_id,
+        COALESCE(ward, -1) AS ward_num
+    FROM {{ ref('stg_crimes') }}
+    WHERE beat IS NOT NULL OR district IS NOT NULL OR ward IS NOT NULL
+)
+
 SELECT
-    COALESCE(LPAD(TRIM(beat::TEXT), 4, '0'), '-1') AS beat_code,
-    NULLIF(TRIM(beat::TEXT), '')::INTEGER AS beat_num,
+    b.beat_code,
+    b.beat_num,
+    COALESCE(pb.seed_sector, b.fallback_sector) AS sector,
+    b.district_id,
     CASE
-        WHEN LENGTH(TRIM(beat::TEXT)) >= 2 THEN SUBSTRING(TRIM(beat::TEXT), 1, 2)
-        ELSE 'UNK'
-    END AS sector,
-    COALESCE(LPAD(TRIM(district::TEXT), 2, '0'), '-1') AS district_id,
-    CASE
-        WHEN district IS NOT NULL AND TRIM(district::TEXT) != ''
-        THEN 'District ' || LPAD(TRIM(district::TEXT), 2, '0')
+        WHEN b.district_id != '-1' THEN 'District ' || b.district_id
         ELSE 'Unknown District'
     END AS district_name,
-    COALESCE(TRIM(community_area::TEXT), '-1') AS community_area_id,
-    CASE
-        WHEN community_area IS NOT NULL AND TRIM(community_area::TEXT) != ''
-        THEN 'Community Area ' || TRIM(community_area::TEXT)
-        ELSE 'Unknown Community'
-    END AS community_name,
-    COALESCE(ward, -1) AS ward_num
-FROM {{ ref('stg_crimes') }}
-WHERE beat IS NOT NULL OR district IS NOT NULL OR ward IS NOT NULL
+    b.community_area_id,
+    COALESCE(
+        ca.community_name,
+        CASE 
+            WHEN b.community_area_id != '-1' THEN 'Community Area ' || b.community_area_id 
+            ELSE 'Unknown Community' 
+        END
+    ) AS community_name,
+    b.ward_num
+FROM distinct_boundaries b
+LEFT JOIN seed_districts pd ON b.district_id = pd.district_id
+LEFT JOIN seed_communities ca ON b.community_area_id = ca.community_area_id
+LEFT JOIN seed_beats pb ON b.beat_code = pb.beat_code
+LEFT JOIN seed_wards cw ON b.ward_num = cw.ward_num
 
 {% endsnapshot %}
 ```
